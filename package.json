@@ -1,0 +1,32 @@
+{
+  "name": "searchland-test",
+  "version": "1.0.0",
+  "description": "## Full Stack Tech Lead Test",
+  "main": "index.js",
+  "workspaces": [
+    "apps/backend",
+    "apps/frontend"
+  ],
+  "scripts": {
+    "test": "npm run test:backend && npm run test:frontend",
+    "test:backend": "npm run test --workspace=searchland-backend",
+    "test:frontend": "npm run test --workspace=searchland-frontend",
+    "dev": "concurrently \"npm run dev --workspace=searchland-backend\" \"npm run start --workspace=searchland-frontend\"",
+    "dev:backend": "npm run dev --workspace=searchland-backend",
+    "dev:frontend": "npm run dev --workspace=searchland-frontend"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CNamor/searchland-test.git"
+  },
+  "keywords": [],
+  "author": "Mila Namor",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CNamor/searchland-test/issues"
+  },
+  "homepage": "https://github.com/CNamor/searchland-test#readme",
+  "devDependencies": {
+    "concurrently": "^9.0.1"
+  }
+}

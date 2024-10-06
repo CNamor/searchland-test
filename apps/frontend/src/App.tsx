@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import { trpc } from "./trpc";
 import UserTable from "./components/UserTable";
+import AddUserForm from "./components/AddUser";
 
 export function App() {
   const [queryClient] = useState(() => new QueryClient());
@@ -21,6 +22,7 @@ export function App() {
       <QueryClientProvider client={queryClient}>
         <div className='p-4'>
           <h1 className='text-3xl font-bold mb-4'>User Management</h1>
+          <AddUserForm />
           <UserTable />
         </div>
       </QueryClientProvider>

@@ -5,7 +5,7 @@ import { User } from "../../types/User.type";
 
 const UserTable = () => {
   const [page, setPage] = useState(1);
-  const pageSize = 10;
+  const pageSize = 3;
 
   const { data: users, isLoading } = trpc.getUsers.useQuery({ page, pageSize });
 

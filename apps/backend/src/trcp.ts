@@ -30,7 +30,8 @@ export const appRouter = t.router({
       })
     )
     .query(async ({ input }) => {
-      return userService.getUsers(1, 10);
+      const users = await userService.getUsers(input.page, input.pageSize);
+      return users;
     }),
   getUserById: publicProcedure.input(z.number()).query(async ({ input }) => {
     return userService.getUserById(input);

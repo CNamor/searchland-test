@@ -3,6 +3,7 @@ import { eq } from "drizzle-orm";
 
 import { db } from "../db";
 import { users } from "../schema";
+import { User } from "../types/User.type";
 
 const userSchema = z.object({
   name: z.string().min(1),
@@ -18,7 +19,7 @@ const updateUserSchema = z.object({
 export const userService = {
   createUser: async (userData: z.infer<typeof userSchema>) => {
     const { name, email } = userData;
-    const result = await db
+    const result: User[] = await db
       .insert(users)
       .values({
         name,

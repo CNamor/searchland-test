@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { trpc } from "../trpc";
 import { User } from "../../types/User.type";
 import DeleteUserButton from "./DeleteUser";
+import AddUser from "./AddUser";
 
 const UserTable: React.FC = () => {
   const [page, setPage] = useState(1);
@@ -45,8 +46,13 @@ const UserTable: React.FC = () => {
               <td className='py-2 px-4 border'>{user.id}</td>
               <td className='py-2 px-4 border'>{user.name}</td>
               <td className='py-2 px-4 border'>{user.email}</td>
-              <td className='py-2 px-4 border'>
+              <td className='py-2 px-4 border flex items-start	'>
                 <DeleteUserButton userId={user.id} />
+                <div className='ml-4'>
+                  <AddUser
+                    user={{ id: user.id, name: user.name, email: user.email }}
+                  />
+                </div>
               </td>
             </tr>
           ))}

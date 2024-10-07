@@ -50,10 +50,11 @@ const UserProfile: React.FC = () => {
           </p>
           <div>
             <AddUser
-              action='update'
-              userId={userId}
-              userName={data?.name}
-              userEmail={data?.email}
+              user={{
+                id: userId,
+                name: data.name,
+                email: data.email,
+              }}
             />
           </div>
         </>

@@ -2,7 +2,7 @@ import { ReactNode, useEffect } from "react";
 
 export const Modal: React.FC<{
   isOpen: boolean;
-  onClose: () => void;
+  onClose: (e?: React.MouseEvent | React.KeyboardEvent) => void;
   children: ReactNode;
 }> = ({ isOpen, onClose, children }) => {
   useEffect(() => {

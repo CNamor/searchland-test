@@ -4,20 +4,14 @@ import { useNavigate } from "react-router-dom";
 import { trpc } from "../trpc";
 import { Modal } from "./Modal";
 import DeleteUserButton from "./DeleteUser";
+import { UserData } from "../../types/User.type";
 
 const UserTable: React.FC<{
-  action?: "create" | "update";
-  userId?: number;
-  userName?: string;
-  userEmail?: string;
-}> = ({ action = "create", userId, userName, userEmail }) => {
+  user?: UserData;
+}> = ({ user }) => {
   const [showAddUserModal, setShowAddUserModal] = useState(false);
-  const [name, setName] = useState(
-    action === "update" && userName ? userName : ""
-  );
-  const [email, setEmail] = useState(
-    action === "update" && userEmail ? userEmail : ""
-  );
+  const [name, setName] = useState(user ? user.name : "");
+  const [email, setEmail] = useState(user ? user.email : "");
   const navigate = useNavigate();
 
   const { mutate: createUser } = trpc.createUser.useMutation({
@@ -36,10 +30,10 @@ const UserTable: React.FC<{
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (action === "create") {
+    if (!user) {
       createUser({ name, email });
-    } else if (action === "update" && userId) {
-      updateUser({ id: userId, name, email });
+    } else {
+      updateUser({ id: user?.id, name, email });
     }
   };
 
@@ -50,22 +44,28 @@ const UserTable: React.FC<{
     }
   };
 
-  const formattedAction = action.charAt(0).toUpperCase() + action.slice(1);
-
   return (
     <div className='flex justify-end mb-4'>
       <button
         className='bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded'
-        onClick={() => setShowAddUserModal(true)}
+        onClick={(e) => {
+          e.stopPropagation();
+          setShowAddUserModal(true);
+        }}
       >
-        {formattedAction} User
+        {user ? "Update" : "Create"} User
       </button>
 
       <Modal
         isOpen={showAddUserModal}
-        onClose={() => setShowAddUserModal(false)}
+        onClose={(e: React.MouseEvent | React.KeyboardEvent | undefined) => {
+          e?.stopPropagation();
+          setShowAddUserModal(false);
+        }}
       >
-        <h2 className='text-lg font-bold mb-4'>{formattedAction} User</h2>
+        <h2 className='text-lg font-bold mb-4'>
+          {user ? "Update" : "Create"} User
+        </h2>
         <input
           type='text'
           placeholder='Name'
@@ -84,9 +84,9 @@ const UserTable: React.FC<{
         />
         <div className='flex justify-between mt-4'>
           <>
-            {action === "update" && userId && (
+            {user && (
               <DeleteUserButton
-                userId={userId}
+                userId={user.id}
                 callback={() => navigate("/")}
               />
             )}

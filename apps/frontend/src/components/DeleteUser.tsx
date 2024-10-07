@@ -25,9 +25,8 @@ const DeleteUserButton: React.FC<{
   return (
     <button
       className='bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded'
-      onClick={() => {
-        // Stop propagation makes sure we can still click on the
-        // delete button
+      onClick={(e) => {
+        e.stopPropagation();
         handleDelete(userId);
       }}
     >

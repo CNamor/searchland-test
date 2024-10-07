@@ -5,3 +5,9 @@ export interface User {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface UserData {
+  id: number;
+  name: string;
+  email: string;
+}

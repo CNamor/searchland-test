@@ -1,20 +1,55 @@
 import React from "react";
+import { useParams, useNavigate } from "react-router-dom";
+
 import { trpc } from "../trpc";
-import { useParams } from "react-router-dom";
+import { formatDate } from "../utils/dateFormatter";
+import { BackHomeButton } from "./BackHomeButton";
+import NotFound from "./NotFound";
 
 const UserProfile: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const { data, isLoading } = trpc.getUserById.useQuery(Number(id));
+  const navigate = useNavigate();
 
-  if (isLoading) return <div>Loading...</div>;
+  const userId = Number(id);
+  if (isNaN(userId)) {
+    console.error("Invalid user ID");
+    return <NotFound />;
+  }
+
+  const { data, isLoading, error } = trpc.getUserById.useQuery(userId);
+
+  if (error) return <NotFound />;
 
   return (
     <div>
-      <h2>User Profile</h2>
-      <p>Name: {data?.name}</p>
-      <p>Email: {data?.email}</p>
-      <p>Created on: {data?.createdAt}</p>
-      <p>Last updated: {data?.updatedAt}</p>
+      <BackHomeButton />
+      {isLoading ? (
+        <div>Loading...</div>
+      ) : (
+        <>
+          <h1 className='text-4xl font-bold mb-4'>{data?.name}'s Profile</h1>
+          <p>
+            <span className='font-bold'>Name:</span> {data?.name}
+          </p>
+          <p>
+            <span className='font-bold'>E-mail:</span>{" "}
+            <a
+              href={`mailto:${data?.email}`}
+              className='text-blue-500 hover:text-blue-700'
+            >
+              {data?.email}
+            </a>
+          </p>
+          <p>
+            <span className='font-bold'>Created on:</span>{" "}
+            {formatDate(data?.createdAt)}
+          </p>
+          <p>
+            <span className='font-bold'>Last updated:</span>{" "}
+            {formatDate(data?.updatedAt)}
+          </p>
+        </>
+      )}
     </div>
   );
 };

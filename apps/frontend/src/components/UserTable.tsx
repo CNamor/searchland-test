@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { trpc } from "../trpc";
 import { User } from "../../types/User.type";
 
 const UserTable = () => {
   const [page, setPage] = useState(1);
-  const pageSize = 3;
+  const pageSize = 10;
+  const navigate = useNavigate();
 
   const { data, isLoading } = trpc.getUsers.useQuery({ page, pageSize });
 
@@ -24,6 +26,10 @@ const UserTable = () => {
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const handleRowClick = (userId: number) => {
+    navigate(`/user-profile/${userId}`);
   };
 
   if (isLoading) return <div className='text-center'>Loading...</div>;
@@ -47,14 +53,23 @@ const UserTable = () => {
         </thead>
         <tbody>
           {users.map((user: User) => (
-            <tr key={user.id}>
+            <tr
+              key={user.id}
+              className='cursor-pointer hover:bg-gray-100'
+              onClick={() => handleRowClick(user.id)}
+            >
               <td className='py-2 px-4 border'>{user.id}</td>
               <td className='py-2 px-4 border'>{user.name}</td>
               <td className='py-2 px-4 border'>{user.email}</td>
               <td className='py-2 px-4 border'>
                 <button
                   className='bg-red-500 hover:bg-red-700 text-white py-1 px-2 rounded'
-                  onClick={() => handleDelete(user.id)}
+                  onClick={(e) => {
+                    // Stop propagation makes sure we can still click on the
+                    // delete button
+                    e.stopPropagation();
+                    handleDelete(user.id);
+                  }}
                 >
                   Delete
                 </button>

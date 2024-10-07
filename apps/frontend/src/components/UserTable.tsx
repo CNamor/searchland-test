@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { trpc } from "../trpc";
 import { User } from "../../types/User.type";
 import DeleteUserButton from "./DeleteUser";
-import AddUser from "./AddUser";
+import UserDataModal from "./UserDataModal";
 
 const UserTable: React.FC = () => {
   const [page, setPage] = useState(1);
@@ -49,7 +49,7 @@ const UserTable: React.FC = () => {
               <td className='py-2 px-4 border flex items-start	'>
                 <DeleteUserButton userId={user.id} />
                 <div className='ml-4'>
-                  <AddUser
+                  <UserDataModal
                     user={{ id: user.id, name: user.name, email: user.email }}
                   />
                 </div>

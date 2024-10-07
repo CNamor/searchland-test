@@ -5,7 +5,7 @@ import { Routes, Route } from "react-router-dom";
 
 import { trpc } from "./trpc";
 import UserTable from "./components/UserTable";
-import AddUserForm from "./components/AddUser";
+import UserDataModal from "./components/UserDataModal";
 import UserProfile from "./components/UserProfile";
 import NotFound from "./components/NotFound";
 
@@ -31,7 +31,7 @@ export function App() {
               element={
                 <>
                   <h1 className='text-4xl font-bold mb-4'>User Management</h1>
-                  <AddUserForm />
+                  <UserDataModal />
                   <UserTable />
                 </>
               }

@@ -8,7 +8,9 @@ import { UserData } from "../../types/User.type";
 
 const UserTable: React.FC<{
   user?: UserData;
-}> = ({ user }) => {
+  refreshOnClose?: boolean;
+  closeOnSubmit?: boolean;
+}> = ({ user, refreshOnClose = true, closeOnSubmit = true }) => {
   const [showAddUserModal, setShowAddUserModal] = useState(false);
   const [name, setName] = useState(user ? user.name : "");
   const [email, setEmail] = useState(user ? user.email : "");
@@ -34,6 +36,14 @@ const UserTable: React.FC<{
       createUser({ name, email });
     } else {
       updateUser({ id: user?.id, name, email });
+    }
+
+    if (closeOnSubmit) {
+      setShowAddUserModal(false);
+
+      if (refreshOnClose) {
+        window.location.reload();
+      }
     }
   };
 
@@ -62,6 +72,7 @@ const UserTable: React.FC<{
           e?.stopPropagation();
           setShowAddUserModal(false);
         }}
+        refreshOnClose={refreshOnClose}
       >
         <h2 className='text-lg font-bold mb-4'>
           {user ? "Update" : "Create"} User

@@ -5,7 +5,7 @@ import { trpc } from "../trpc";
 import { formatDate } from "../utils/dateFormatter";
 import BackHomeButton from "./BackHomeButton";
 import NotFound from "./NotFound";
-import AddUser from "./AddUser";
+import UserDataModal from "./UserDataModal";
 
 const UserProfile: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -49,7 +49,7 @@ const UserProfile: React.FC = () => {
             {formatDate(data?.updatedAt)}
           </p>
           <div>
-            <AddUser
+            <UserDataModal
               user={{
                 id: userId,
                 name: data.name,

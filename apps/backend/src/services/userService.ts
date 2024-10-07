@@ -58,7 +58,7 @@ export const userService = {
       .from(users)
       .where(eq(users.id, id))
       .execute();
-    return result[0];
+    return result.length > 0 ? result[0] : undefined;
   },
   updateUser: async (
     id: number,

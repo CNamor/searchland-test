@@ -7,11 +7,6 @@ const t = initTRPC.create();
 const publicProcedure = t.procedure;
 
 export const appRouter = t.router({
-  hello: publicProcedure.query(() => {
-    return {
-      message: "hello world",
-    };
-  }),
   createUser: publicProcedure
     .input(
       z.object({
@@ -20,8 +15,22 @@ export const appRouter = t.router({
       })
     )
     .mutation(async ({ input }) => {
-      return userService.createUser(input);
+      try {
+        return await userService.createUser(input);
+      } catch (error: unknown) {
+        if (error instanceof z.ZodError) {
+          throw new Error(
+            "Invalid user data: " +
+              error.errors.map((e) => e.message).join(", ")
+          );
+        }
+        if (error instanceof Error) {
+          throw new Error("Failed to create user: " + error.message);
+        }
+        throw new Error("Failed to create user: Unknown error");
+      }
     }),
+
   getUsers: publicProcedure
     .input(
       z.object({
@@ -30,12 +39,31 @@ export const appRouter = t.router({
       })
     )
     .query(async ({ input }) => {
-      const users = await userService.getUsers(input.page, input.pageSize);
-      return users;
+      try {
+        return await userService.getUsers(input.page, input.pageSize);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          throw new Error("Failed to fetch users: " + error.message);
+        }
+        throw new Error("Failed to fetch users: Unknown error");
+      }
     }),
+
   getUserById: publicProcedure.input(z.number()).query(async ({ input }) => {
-    return userService.getUserById(input);
+    try {
+      const user = await userService.getUserById(input);
+      if (!user) {
+        throw new Error("User not found");
+      }
+      return user;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new Error("Failed to fetch user: " + error.message);
+      }
+      throw new Error("Failed to fetch user: Unknown error");
+    }
   }),
+
   updateUser: publicProcedure
     .input(
       z.object({
@@ -45,8 +73,16 @@ export const appRouter = t.router({
       })
     )
     .mutation(async ({ input }) => {
-      return userService.updateUser(input.id, input);
+      try {
+        return await userService.updateUser(input.id, input);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          throw new Error("Failed to update user: " + error.message);
+        }
+        throw new Error("Failed to update user: Unknown error");
+      }
     }),
+
   deleteUser: publicProcedure
     .input(
       z.object({
@@ -54,9 +90,16 @@ export const appRouter = t.router({
       })
     )
     .mutation(async ({ input }) => {
-      console.log("Received input:", input);
-      const { id } = input;
-      return await userService.deleteUser(id);
+      try {
+        console.log("Received input:", input);
+        const { id } = input;
+        return await userService.deleteUser(id);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          throw new Error("Failed to delete user: " + error.message);
+        }
+        throw new Error("Failed to delete user: Unknown error");
+      }
     }),
 });
 

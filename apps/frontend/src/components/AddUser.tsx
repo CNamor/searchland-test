@@ -27,7 +27,7 @@ const UserTable: React.FC = () => {
   };
 
   return (
-    <div className='flex justify-end mb-4 mr-2'>
+    <div className='flex justify-end mb-4'>
       <button
         className='bg-green-500 hover:bg-green-700 text-white py-2 px-4 rounded'
         onClick={() => setShowAddUserModal(true)}

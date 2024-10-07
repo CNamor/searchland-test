@@ -1,13 +1,12 @@
 import { useState } from "react";
 import { trpc } from "../trpc";
-
 import { User } from "../../types/User.type";
 
 const UserTable = () => {
   const [page, setPage] = useState(1);
   const pageSize = 3;
 
-  const { data: users, isLoading } = trpc.getUsers.useQuery({ page, pageSize });
+  const { data, isLoading } = trpc.getUsers.useQuery({ page, pageSize });
 
   const deleteUserMutation = trpc.deleteUser.useMutation({
     onSuccess: () => {
@@ -29,8 +28,11 @@ const UserTable = () => {
 
   if (isLoading) return <div className='text-center'>Loading...</div>;
 
-  if (!users || users.length === 0)
+  if (!data || data.results.length === 0)
     return <div className='text-center'>No users found</div>;
+
+  const { results: users, totalCount } = data;
+  const totalPages = Math.ceil(totalCount / pageSize);
 
   return (
     <div className='container mx-auto'>
@@ -47,8 +49,8 @@ const UserTable = () => {
           {users.map((user: User) => (
             <tr key={user.id}>
               <td className='py-2 px-4 border'>{user.id}</td>
-              <td className='py-2 px-4 border'>{user.name}</td>{" "}
-              <td className='py-2 px-4 border'>{user.email}</td>{" "}
+              <td className='py-2 px-4 border'>{user.name}</td>
+              <td className='py-2 px-4 border'>{user.email}</td>
               <td className='py-2 px-4 border'>
                 <button
                   className='bg-red-500 hover:bg-red-700 text-white py-1 px-2 rounded'
@@ -63,20 +65,31 @@ const UserTable = () => {
       </table>
 
       <div className='flex justify-between my-4'>
-        <button
-          className='bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded'
-          onClick={() => setPage(page - 1)}
-          disabled={page === 1}
-        >
-          Previous
-        </button>
-        <button
-          className='bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded'
-          onClick={() => setPage(page + 1)}
-        >
-          Next
-        </button>
+        <div>
+          {!(page === 1) && (
+            <button
+              className='bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded'
+              onClick={() => setPage(page - 1)}
+              disabled={page === 1}
+            >
+              Previous
+            </button>
+          )}
+        </div>
+        <div>
+          {!(page === totalPages) && (
+            <button
+              className='bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded'
+              onClick={() => setPage(page + 1)}
+            >
+              Next
+            </button>
+          )}
+        </div>
       </div>
+      <p className='text-center'>
+        Page {page} of {totalPages}
+      </p>
     </div>
   );
 };

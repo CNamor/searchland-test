@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 
 import { db } from "../db";
 import { users } from "../schema";
@@ -32,13 +32,25 @@ export const userService = {
   },
   getUsers: async (page: number, pageSize: number) => {
     const offset = (page - 1) * pageSize;
+
     const results = await db
       .select()
       .from(users)
       .limit(pageSize)
       .offset(offset)
       .execute();
-    return results;
+
+    const totalCountResult = await db
+      .select({ count: sql<number>`COUNT(*)` })
+      .from(users)
+      .execute();
+
+    const totalCount = totalCountResult[0].count;
+
+    return {
+      results,
+      totalCount,
+    };
   },
   getUserById: async (id: number) => {
     const result = await db

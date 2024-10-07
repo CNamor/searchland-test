@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-export const BackHomeButton: React.FC = () => {
+const BackHomeButton: React.FC = () => {
   const navigate = useNavigate();
   return (
     <button
@@ -11,3 +11,5 @@ export const BackHomeButton: React.FC = () => {
     </button>
   );
 };
+
+export default BackHomeButton;

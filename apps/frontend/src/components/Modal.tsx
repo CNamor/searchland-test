@@ -1,10 +1,26 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 
 export const Modal: React.FC<{
   isOpen: boolean;
   onClose: () => void;
   children: ReactNode;
 }> = ({ isOpen, onClose, children }) => {
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      window.addEventListener("keydown", handleKeyDown);
+    }
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   return (

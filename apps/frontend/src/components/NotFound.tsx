@@ -1,5 +1,5 @@
 import React from "react";
-import { BackHomeButton } from "./BackHomeButton";
+import BackHomeButton from "./BackHomeButton";
 
 const NotFound: React.FC = () => {
   return (

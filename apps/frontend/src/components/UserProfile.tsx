@@ -1,14 +1,14 @@
 import React from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import { trpc } from "../trpc";
 import { formatDate } from "../utils/dateFormatter";
-import { BackHomeButton } from "./BackHomeButton";
+import BackHomeButton from "./BackHomeButton";
 import NotFound from "./NotFound";
+import AddUser from "./AddUser";
 
 const UserProfile: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
 
   const userId = Number(id);
   if (isNaN(userId)) {
@@ -48,6 +48,14 @@ const UserProfile: React.FC = () => {
             <span className='font-bold'>Last updated:</span>{" "}
             {formatDate(data?.updatedAt)}
           </p>
+          <div>
+            <AddUser
+              action='update'
+              userId={userId}
+              userName={data?.name}
+              userEmail={data?.email}
+            />
+          </div>
         </>
       )}
     </div>

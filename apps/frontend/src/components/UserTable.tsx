@@ -1,32 +1,16 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import { trpc } from "../trpc";
 import { User } from "../../types/User.type";
+import DeleteUserButton from "./DeleteUser";
 
-const UserTable = () => {
+const UserTable: React.FC = () => {
   const [page, setPage] = useState(1);
   const pageSize = 10;
   const navigate = useNavigate();
 
   const { data, isLoading } = trpc.getUsers.useQuery({ page, pageSize });
-
-  const deleteUserMutation = trpc.deleteUser.useMutation({
-    onSuccess: () => {
-      alert("User deleted successfully");
-    },
-    onError: (error) => {
-      console.error(error);
-      alert("Error deleting user");
-    },
-  });
-
-  const handleDelete = async (id: number) => {
-    try {
-      await deleteUserMutation.mutateAsync({ id });
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   const handleRowClick = (userId: number) => {
     navigate(`/user-profile/${userId}`);
@@ -62,17 +46,7 @@ const UserTable = () => {
               <td className='py-2 px-4 border'>{user.name}</td>
               <td className='py-2 px-4 border'>{user.email}</td>
               <td className='py-2 px-4 border'>
-                <button
-                  className='bg-red-500 hover:bg-red-700 text-white py-1 px-2 rounded'
-                  onClick={(e) => {
-                    // Stop propagation makes sure we can still click on the
-                    // delete button
-                    e.stopPropagation();
-                    handleDelete(user.id);
-                  }}
-                >
-                  Delete
-                </button>
+                <DeleteUserButton userId={user.id} />
               </td>
             </tr>
           ))}
